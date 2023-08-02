@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import Wallet from "./wallet";
+import {
+  PROVIDER_ID,
+  useInitializeProviders,
+  WalletProvider,
+} from "@txnlab/use-wallet";
+import { WalletConnectModalSign } from "@walletconnect/modal-sign-html";
 
-function App() {
+const App = () => {
+  const providers = useInitializeProviders({
+    providers: [
+      {
+        id: PROVIDER_ID.WALLETCONNECT,
+        clientStatic: WalletConnectModalSign,
+        clientOptions: {
+          projectId: process.env.REACT_APP_PROJECT_ID,
+          metadata: {
+            name: "JASIRI dApp",
+            description: "JASIRI dApp",
+            url: "#",
+            icons: ["https://walletconnect.com/walletconnect-logo.png"],
+          },
+          modalOptions: {
+            themeMode: "light",
+          },
+        },
+      },
+    ],
+    nodeConfig: {
+      network: "testnet",
+      nodeServer: "https://testnet-api.algonode.cloud",
+      nodeToken: "",
+      nodePort: "443",
+    },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <WalletProvider value={providers}>
+        <Wallet />
+      </WalletProvider>
     </div>
   );
-}
+};
 
 export default App;
